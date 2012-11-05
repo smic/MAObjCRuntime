@@ -20,7 +20,7 @@
     do
     {
         count = objc_getClassList(NULL, 0);
-        buffer = realloc(buffer, count * sizeof(*buffer));
+        buffer = (Class *)realloc(buffer, count * sizeof(*buffer));
         size = objc_getClassList(buffer, count);
     } while(size != count);
     
