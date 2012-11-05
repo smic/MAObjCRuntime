@@ -83,7 +83,7 @@
 + (NSArray *)rt_protocols
 {
     unsigned int count;
-    Protocol **protocols = class_copyProtocolList(self, &count);
+    Protocol *__unsafe_unretained *protocols = class_copyProtocolList(self, &count);
     
     NSMutableArray *array = [NSMutableArray array];
     for(unsigned i = 0; i < count; i++)
