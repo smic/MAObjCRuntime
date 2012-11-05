@@ -17,10 +17,10 @@
     if((self = [self init]))
     {
         _property = property;
-        NSArray *attrPairs = [[NSString stringWithUTF8String: property_getAttributes(property)] componentsSeparatedByString: @","];
+        NSArray *attrPairs = [@(property_getAttributes(property)) componentsSeparatedByString: @","];
         _attrs = [[NSMutableDictionary alloc] initWithCapacity:[attrPairs count]];
         for(NSString *attrPair in attrPairs)
-            [_attrs setObject:[attrPair substringFromIndex:1] forKey:[attrPair substringToIndex:1]];
+            _attrs[[attrPair substringToIndex:1]] = [attrPair substringFromIndex:1];
     }
     return self;
 }
@@ -45,7 +45,7 @@
 - (NSString *)name
 {
     if (_property)
-        return [NSString stringWithUTF8String: property_getName(_property)];
+        return @(property_getName(_property));
     else
         return _name;
 }
@@ -63,7 +63,7 @@
     unsigned attrIdx = 0;
     for (NSString *attrCode in attrs) {
         cattrs[attrIdx].name = [attrCode UTF8String];
-        cattrs[attrIdx].value = [[attrs objectForKey:attrCode] UTF8String];
+        cattrs[attrIdx].value = [attrs[attrCode] UTF8String];
         attrIdx++;
     }
     BOOL result = class_addProperty(classToAddTo,
@@ -81,14 +81,14 @@
     for (NSString *attrKey in _attrs)
     {
         if (![attrKey isEqualToString:RTPropertyTypeEncodingAttribute] && ![attrKey isEqualToString:RTPropertyBackingIVarNameAttribute])
-            [filteredAttributes addObject:[_attrs objectForKey:attrKey]];
+            [filteredAttributes addObject:_attrs[attrKey]];
     }
     return [filteredAttributes componentsJoinedByString: @","];
 }
 
 - (BOOL)hasAttribute: (NSString *)code
 {
-    return [_attrs objectForKey:code] != nil;
+    return _attrs[code] != nil;
 }
 
 - (BOOL)isReadOnly
@@ -125,7 +125,7 @@
 
 - (NSString *)contentOfAttribute: (NSString *)code
 {
-    return [_attrs objectForKey:code];
+    return _attrs[code];
 }
 
 - (SEL)customGetter

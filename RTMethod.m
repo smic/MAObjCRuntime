@@ -36,7 +36,7 @@
 
 - (NSString *)signature
 {
-    return [NSString stringWithUTF8String: method_getTypeEncoding(_m)];
+    return @(method_getTypeEncoding(_m));
 }
 
 - (void)setImplementation: (IMP)newImp

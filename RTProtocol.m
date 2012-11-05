@@ -87,7 +87,7 @@
 
 - (NSString *)name
 {
-    return [NSString stringWithUTF8String: protocol_getName([self objCProtocol])];
+    return @(protocol_getName([self objCProtocol]));
 }
 
 - (NSArray *)incorporatedProtocols

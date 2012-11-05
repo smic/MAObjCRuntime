@@ -20,12 +20,12 @@
 }
 - (NSString *)name
 {
-    return [NSString stringWithUTF8String: ivar_getName(_ivar)];
+    return @(ivar_getName(_ivar));
 }
 
 - (NSString *)typeEncoding
 {
-    return [NSString stringWithUTF8String: ivar_getTypeEncoding(_ivar)];
+    return @(ivar_getTypeEncoding(_ivar));
 }
 
 - (ptrdiff_t)offset
@@ -92,7 +92,7 @@
 
 + (id)ivarWithName: (NSString *)name encode: (const char *)encodeStr
 {
-    return [self ivarWithName: name typeEncoding: [NSString stringWithUTF8String: encodeStr]];
+    return [self ivarWithName: name typeEncoding: @(encodeStr)];
 }
 
 - (id)initWithObjCIvar: (Ivar)ivar

@@ -104,7 +104,7 @@ static void TestMethodList(void)
     }];
     TEST_ASSERT(index < [methods count]);
     
-    RTMethod *method = [methods objectAtIndex: index];
+    RTMethod *method = methods[index];
     TEST_ASSERT([method implementation] == [NSObject instanceMethodForSelector: sel]);
     TEST_ASSERT([[NSMethodSignature signatureWithObjCTypes: [[method signature] UTF8String]] isEqual: [NSObject instanceMethodSignatureForSelector: sel]]);
 }
@@ -200,7 +200,7 @@ static void TestIvarQuery(void)
     
     RTIvar *ivar = [SampleClass rt_ivarForName: @"someIvar"];
     TEST_ASSERT([[ivar name] isEqual: @"someIvar"]);
-    TEST_ASSERT([[ivar typeEncoding] isEqual: [NSString stringWithUTF8String: @encode(id)]]);
+    TEST_ASSERT([[ivar typeEncoding] isEqual: @(@encode(id))]);
     TEST_ASSERT([ivar offset] == sizeof(id));
 }
 
@@ -212,7 +212,7 @@ static void TestPropertyQuery(void)
     RTProperty *property = [SampleClass rt_propertyForName: @"someProperty"];
     TEST_ASSERT([[property name] isEqual: @"someProperty"]);
     TEST_ASSERT([property customGetter] == @selector(customGetter));
-    TEST_ASSERT([[property typeEncoding] isEqual: [NSString stringWithUTF8String: @encode(id)]]);
+    TEST_ASSERT([[property typeEncoding] isEqual: @(@encode(id))]);
     TEST_ASSERT([[property ivarName] isEqual: @"someIvar"]);
 }
 
@@ -225,10 +225,8 @@ static void TestAddProperty(void)
     Class c = [unreg registerClass];
     
     RTProperty *assignedObjectProp = [RTProperty propertyWithName:@"assignedObjectProp"
-                                                       attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                                   [ivar typeEncoding], RTPropertyTypeEncodingAttribute,
-                                                                   [ivar name], RTPropertyBackingIVarNameAttribute,
-                                                                   nil]];
+                                                       attributes:@{RTPropertyTypeEncodingAttribute: [ivar typeEncoding],
+                                                                   RTPropertyBackingIVarNameAttribute: [ivar name]}];
     [c rt_addProperty:assignedObjectProp];
     
     {{
@@ -237,7 +235,7 @@ static void TestAddProperty(void)
         
         RTProperty *property = [c rt_propertyForName: @"assignedObjectProp"];
         TEST_ASSERT([[property name] isEqual: @"assignedObjectProp"]);
-        TEST_ASSERT([[property typeEncoding] isEqual: [NSString stringWithUTF8String: @encode(id)]]);
+        TEST_ASSERT([[property typeEncoding] isEqual: @(@encode(id))]);
         TEST_ASSERT([[property ivarName] isEqual: @"assignedIvar"]);
         TEST_ASSERT([property setterSemantics] == RTPropertySetterSemanticsAssign);
     }}
